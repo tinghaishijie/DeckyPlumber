@@ -55,10 +55,10 @@ const AboutPage: FC = () => {
         )}
         <Field
           icon={<FiGithub style={{ display: "block" }} />}
-          label="aarron-lee/DeckyPlumber"
+          label="tinghaishijie/DeckyPlumber"
           onClick={() => {
             Navigation.NavigateToExternalWeb(
-              "https://github.com/aarron-lee/DeckyPlumber"
+              "https://github.com/tinghaishijie/DeckyPlumber"
             );
           }}
         >

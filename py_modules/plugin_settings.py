@@ -50,7 +50,11 @@ def get_controller_profile_for_game_id(game_id):
 
     controller_profile = s.get('controllerProfiles', {}).get(game_id if per_game_profiles_enabled else 'default')
 
-    return controller_profile
+    if controller_profile:
+        return controller_profile
+    if per_game_profiles_enabled and s.get("advanced", {}).get("ALWAYS_USE_DEFAULT"):
+        return dict(DEFAULT_CONTROLLER_VALUES)
+    return s.get("controllerProfiles", {}).get("default") or dict(DEFAULT_CONTROLLER_VALUES)
 
 def get_controller_mode_for_game_id(game_id):
     controller_profile = get_controller_profile_for_game_id(game_id)

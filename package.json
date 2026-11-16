@@ -1,16 +1,17 @@
 {
   "name": "decky-plumber",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "InputPlumber Decky Plugin",
   "type": "module",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test tests/*.cjs",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aarron-lee/DeckyPlumber.git"
+    "url": "git+https://github.com/tinghaishijie/DeckyPlumber.git"
   },
   "keywords": [
     "decky",
@@ -22,9 +23,9 @@
   "author": "Aarron Lee <lee.aarron.c@gmail.com>",
   "license": "GPL V3.0",
   "bugs": {
-    "url": "https://github.com/aarron-lee/DeckyPlumber/issues"
+    "url": "https://github.com/tinghaishijie/DeckyPlumber/issues"
   },
-  "homepage": "https://github.com/aarron-lee/DeckyPlumber",
+  "homepage": "https://github.com/tinghaishijie/DeckyPlumber",
   "devDependencies": {
     "@decky/rollup": "^1.0.1",
     "@rollup/plugin-commonjs": "^26.0.1",

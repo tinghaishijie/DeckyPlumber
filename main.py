@@ -1,5 +1,3 @@
-import os
-
 import advanced_options
 import controller_utils
 import decky_plugin
@@ -10,9 +8,15 @@ import migrations
 import plugin_settings
 import plugin_update
 from controller_modes import get_controller_mode_options
+from controller_recovery import ControllerRecovery
 
 
 class Plugin:
+    def __init__(self):
+        self.recovery = ControllerRecovery(
+            controller_utils.sync_controller_settings, decky_plugin.logger
+        )
+
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):
         decky_plugin.logger.info("Hello World!")
@@ -55,7 +59,7 @@ class Plugin:
         result = plugin_settings.set_all_controller_profiles(controllerProfiles)
 
         if currentGameId:
-            controller_utils.sync_controller_settings(currentGameId)
+            self.recovery.request(currentGameId)
         return result
 
     # ----- Mapping Profile CRUD -----
@@ -100,13 +104,15 @@ class Plugin:
 
     async def on_suspend(self, currentGameId):
         decky_plugin.logger.info(f"on_suspend called with {currentGameId}")
+        self.recovery.suspend()
 
     async def on_resume(self, currentGameId):
         decky_plugin.logger.info(f"on_resume called with {currentGameId}")
+        self.recovery.resume(currentGameId)
 
     # sync state in settings.json to actual controller hardware
     async def sync_controller_settings(self, currentGameId):
-        return controller_utils.sync_controller_settings(currentGameId)
+        return self.recovery.request(currentGameId)
 
     async def ota_update(self):
         # trigger ota update
@@ -121,8 +127,7 @@ class Plugin:
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
-        decky_plugin.logger.info("Goodbye World!")
-        pass
+        await self.recovery.close()
 
     # Migrations that should be performed before entering `_main()`.
     async def _migration(self):

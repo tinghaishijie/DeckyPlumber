@@ -3,6 +3,7 @@ import { routerHook } from "@decky/api";
 import { FC, memo } from "react";
 import ControllerPanel from "./components/controller/ControllerPanel";
 import { getSettings } from "./backend/utils";
+import { initializeAfterSettings } from "./backend/initialize";
 import { store } from "./redux-modules/store";
 import { getInitialLoading } from "./redux-modules/uiSlice";
 import { setInitialState } from "./redux-modules/extraActions";
@@ -77,15 +78,19 @@ const DeckyPlumberRouter: FC = () => {
 export default definePlugin(() => {
   localizationManager.init();
 
-  getSettings().then((result) => {
-    const results = result || {};
-
-    store.dispatch(setInitialState(results));
-  });
-
-  const clearListener = currentGameIdListener();
-
-  const unsubscribeSuspendListeners = suspendResumeListeners();
+  const cleanup = initializeAfterSettings(
+    getSettings,
+    (result) => store.dispatch(setInitialState(result || {})),
+    () => {
+      const clearGameListener = currentGameIdListener();
+      const clearSuspendListeners = suspendResumeListeners();
+      return () => {
+        clearGameListener();
+        clearSuspendListeners();
+      };
+    },
+    (error) => console.error("Failed to restore DeckyPlumber settings", error),
+  );
 
   routerHook.addRoute(DECKY_PLUMBER_ROUTE, DeckyPlumberRouter);
 
@@ -94,8 +99,7 @@ export default definePlugin(() => {
     content: <AppContainer />,
     icon: <IoGameController />,
     onDismount() {
-      clearListener();
-      unsubscribeSuspendListeners();
+      cleanup();
       routerHook.removeRoute(DECKY_PLUMBER_ROUTE);
     },
   };

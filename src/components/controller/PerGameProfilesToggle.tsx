@@ -4,7 +4,7 @@ import { PanelSectionRow, ToggleField } from "@decky/ui";
 import { L } from "../../i18n";
 import { t } from "i18next";
 
-export const PerGameProfilesToggle: FC = ({ displayName }) => {
+export const PerGameProfilesToggle: FC<{ displayName: string }> = ({ displayName }) => {
   const [perGameProfilesEnabled, setPerGameProfilesEnabled] =
     usePerGameProfilesEnabled();
 

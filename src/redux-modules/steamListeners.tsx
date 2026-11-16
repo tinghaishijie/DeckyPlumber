@@ -4,7 +4,7 @@ function suspendListener() {
   const onSuspendCallback = () => {
     const currentGameId = extractCurrentGameId();
 
-    onSuspend(currentGameId);
+    onSuspend(currentGameId).catch(console.error);
   };
   try {
     const unregister =
@@ -26,13 +26,14 @@ function suspendListener() {
   } catch (e) {
     console.error(e);
   }
+  return undefined;
 }
 
 function resumeListener() {
   const onResumeCallback = () => {
     const currentGameId = extractCurrentGameId();
 
-    onResume(currentGameId);
+    onResume(currentGameId).catch(console.error);
   };
   try {
     const unregister =
@@ -54,6 +55,7 @@ function resumeListener() {
   } catch (e) {
     console.error(e);
   }
+  return undefined;
 }
 
 export const suspendResumeListeners = () => {

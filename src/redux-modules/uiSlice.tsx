@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { setCurrentGameId, setInitialState } from "./extraActions";
 import { RootState } from "./store";
-import { extractDisplayName, logInfo } from "../backend/utils";
+import { extractDisplayName } from "../backend/utils";
 import { ControllerModeOption } from "../backend/constants";
 // import type { RootState } from './store';
 

@@ -26,6 +26,7 @@ export type MappingProfileInfo = {
 
 type ControllerProfile = {
   mode: ControllerModes;
+  enabled?: boolean;
   activeProfiles?: string[];
 };
 
@@ -82,7 +83,12 @@ const bootstrapControllerProfile = (
       DEFAULT_CONTROLLER_PROFILE
     ) as ControllerProfile;
 
-    state.controllerProfiles[newGameId] = defaultProfile;
+    const useDefaultMode = newGameId !== "default" && get(
+      state, `advanced.${AdvancedOptionsEnum.ALWAYS_USE_DEFAULT}`, false,
+    );
+    state.controllerProfiles[newGameId] = useDefaultMode
+      ? { mode: ControllerModes.DEFAULT }
+      : { ...defaultProfile };
   }
 };
 
@@ -197,8 +203,10 @@ export const controllerSlice = createSlice({
       if (mergeBaseProfile !== undefined) {
         state.mergeBaseProfile = mergeBaseProfile;
       }
-      state.controllerProfiles = controllerProfiles;
+      state.controllerProfiles = controllerProfiles || {};
       state.perGameProfilesEnabled = perGameProfilesEnabled;
+      bootstrapControllerProfile(state, "default");
+      bootstrapControllerProfile(state, extractCurrentGameId());
     });
     builder.addCase(setCurrentGameId, (state, action) => {
       /*
@@ -305,14 +313,14 @@ export const selectCurrentProfileInfo = (state: RootState): CurrentProfileInfo =
 // Slice Util functions
 // -------------
 
-function setStateValue({
+function setStateValue<K extends keyof ControllerProfile>({
   sliceState,
   key,
   value,
 }: {
   sliceState: ControllerState;
-  key: string;
-  value: any;
+  key: K;
+  value: ControllerProfile[K];
 }) {
   if (sliceState.perGameProfilesEnabled) {
     const currentGameId = extractCurrentGameId();

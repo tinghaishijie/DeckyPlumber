@@ -424,6 +424,7 @@ def _load_profile_yaml(profile_yaml):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         env=_get_env(),
+        timeout=2,
     )
 
 
@@ -444,6 +445,7 @@ def _restore_base_profile():
         _load_profile_yaml(base_yaml)
     except Exception as e:
         decky_plugin.logger.error(f"Failed to restore base profile: {e}", exc_info=True)
+        raise
 
 
 def apply_mapping_profiles(active_profile_ids, merge_base=False):
@@ -478,3 +480,4 @@ def apply_mapping_profiles(active_profile_ids, merge_base=False):
             f"Error applying mapping profiles: {e}",
             exc_info=True,
         )
+        raise

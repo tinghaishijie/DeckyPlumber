@@ -12,9 +12,10 @@ enum Mode {
   DUAL_SENSE_EDGE,
   HORI_STEAM,
   STEAM_DECK,
+  BITDO_ULTIMATE_2,
 }
 
-const ModeToKey = {
+const ModeToKey: Record<ControllerModes, keyof typeof Mode> = {
   default: "DEFAULT",
   "xbox-series": "XBOX",
   "xbox-elite": "XBOX_ELITE",
@@ -22,6 +23,7 @@ const ModeToKey = {
   "ds5-edge": "DUAL_SENSE_EDGE",
   "hori-steam": "HORI_STEAM",
   "deck-uhid": "STEAM_DECK",
+  "8bitdo-u2": "BITDO_ULTIMATE_2",
 };
 
 const ControllerModeSlider: FC = () => {
@@ -35,7 +37,8 @@ const ControllerModeSlider: FC = () => {
       | "DUAL_SENSE"
       | "DUAL_SENSE_EDGE"
       | "HORI_STEAM"
-      | "STEAM_DECK";
+      | "STEAM_DECK"
+      | "BITDO_ULTIMATE_2";
 
     return setMode(ControllerModes[key]);
   };
@@ -50,8 +53,7 @@ const ControllerModeSlider: FC = () => {
       };
     });
 
-  // known bug: typescript has incorrect type for reverse mapping from enums
-  const sliderValue = Mode[ModeToKey[mode]] as any;
+  const sliderValue = Mode[ModeToKey[mode]];
 
   return (
     <>

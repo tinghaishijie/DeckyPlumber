@@ -16,7 +16,7 @@ const ControllerModeDropdown: FC = () => {
     <DropdownItem
       label={t(L.CONTROLLER_MODE)}
       selectedOption={mode}
-      rgOptions={options}
+      rgOptions={options || []}
       onChange={(option: ControllerModeOption) => setMode(option.data)}
       bottomSeparator="none"
     />

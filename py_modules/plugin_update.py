@@ -7,7 +7,7 @@ import json
 import ssl
 import shutil
 
-API_URL = "http://api.github.com/repos/aarron-lee/DeckyPlumber/releases/latest"
+API_URL = "https://api.github.com/repos/tinghaishijie/DeckyPlumber/releases/latest"
 
 def get_env():
     env = os.environ.copy()
@@ -23,12 +23,13 @@ def recursive_chmod(path, perms):
 
 def download_latest_build():
   # ssl._create_default_https_context = ssl._create_unverified_context
-  gcontext = ssl.SSLContext()
+  gcontext = ssl.create_default_context()
 
   response = urllib.request.urlopen(API_URL, context=gcontext)
   json_data = json.load(response)
 
-  download_url = json_data.get("assets")[0].get("browser_download_url")
+  download_url = next(asset["browser_download_url"] for asset in json_data["assets"]
+                      if asset["name"] == "DeckyPlumber.tar.gz")
 
   file_path = '/tmp/DeckyPlumber.tar.gz'
 
@@ -64,7 +65,7 @@ def ota_update():
     return result
 
 def get_latest_version():
-    gcontext = ssl.SSLContext()
+    gcontext = ssl.create_default_context()
 
     response = urllib.request.urlopen(API_URL, context=gcontext)
     json_data = json.load(response)

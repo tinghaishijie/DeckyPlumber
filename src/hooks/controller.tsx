@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { ControllerModes } from "../backend/constants";
 import {
   controllerSlice,
-  selectControllerInfo,
   selectControllerProfileDisplayName,
   selectPerGameProfilesEnabled,
   selectControllerMode,
@@ -17,7 +16,7 @@ export const useControllerMode = () => {
     return dispatch(controllerSlice.actions.setControllerMode({ mode }));
   }, []);
 
-  return [mode, setMode] as any;
+  return [mode, setMode] as const;
 };
 
 export const usePerGameProfilesEnabled = () => {
